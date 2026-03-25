@@ -1,3 +1,5 @@
+import { PricingSection } from "@/components/pricing";
+
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-white dark:bg-zinc-950">
@@ -81,41 +83,7 @@ export default function Home() {
         </section>
 
         {/* Pricing */}
-        <section className="mt-32 w-full max-w-4xl">
-          <h2 className="text-3xl font-bold text-zinc-900 dark:text-white mb-16">
-            Simple pricing
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto">
-            <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 p-8 text-left">
-              <h3 className="text-lg font-semibold text-zinc-900 dark:text-white">
-                Starter
-              </h3>
-              <div className="mt-4 text-4xl font-bold text-zinc-900 dark:text-white">
-                $9<span className="text-lg font-normal text-zinc-500">/mo</span>
-              </div>
-              <ul className="mt-6 space-y-3 text-zinc-600 dark:text-zinc-400 text-sm">
-                <li>Up to 5 repositories</li>
-                <li>README + CHANGELOG auto-update</li>
-                <li>Community support</li>
-              </ul>
-            </div>
-            <div className="rounded-2xl border-2 border-zinc-900 dark:border-white p-8 text-left">
-              <h3 className="text-lg font-semibold text-zinc-900 dark:text-white">
-                Pro
-              </h3>
-              <div className="mt-4 text-4xl font-bold text-zinc-900 dark:text-white">
-                $29
-                <span className="text-lg font-normal text-zinc-500">/mo</span>
-              </div>
-              <ul className="mt-6 space-y-3 text-zinc-600 dark:text-zinc-400 text-sm">
-                <li>Unlimited repositories</li>
-                <li>README + CHANGELOG + API docs</li>
-                <li>Custom templates</li>
-                <li>Priority support</li>
-              </ul>
-            </div>
-          </div>
-        </section>
+        <PricingSection />
       </main>
 
       {/* Footer */}
