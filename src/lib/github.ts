@@ -7,7 +7,7 @@ interface GitHubInstallationToken {
 
 function generateJWT(): string {
   const appId = process.env.GITHUB_APP_ID!;
-  const privateKey = process.env.GITHUB_PRIVATE_KEY!.replace(/\\n/g, "\n");
+  const privateKey = process.env.GITHUB_APP_PRIVATE_KEY!.replace(/\\n/g, "\n");
 
   const now = Math.floor(Date.now() / 1000);
   const header = Buffer.from(

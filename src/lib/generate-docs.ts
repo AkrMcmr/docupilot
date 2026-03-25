@@ -44,7 +44,7 @@ Generate the following as a JSON object with keys "readme" and "changelog":
 Respond ONLY with valid JSON. No markdown code fences.`;
 
   const message = await anthropic.messages.create({
-    model: "claude-sonnet-4-20250514",
+    model: "claude-sonnet-4-6",
     max_tokens: 4096,
     messages: [{ role: "user", content: prompt }],
   });
