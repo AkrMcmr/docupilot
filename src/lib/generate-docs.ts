@@ -43,11 +43,18 @@ Generate the following as a JSON object with keys "readme" and "changelog":
 
 Respond ONLY with valid JSON. No markdown code fences.`;
 
-  const message = await anthropic.messages.create({
-    model: "claude-sonnet-4-6",
-    max_tokens: 4096,
-    messages: [{ role: "user", content: prompt }],
-  });
+  let message;
+  try {
+    message = await anthropic.messages.create({
+      model: "claude-sonnet-4-6",
+      max_tokens: 4096,
+      messages: [{ role: "user", content: prompt }],
+    });
+  } catch (err) {
+    const errMsg = err instanceof Error ? err.message : String(err);
+    console.error(`[DocuPilot] Claude API error: ${errMsg}`);
+    throw new Error(`Claude API call failed: ${errMsg}`);
+  }
 
   const text = message.content[0].type === "text" ? message.content[0].text : "";
 
@@ -59,6 +66,7 @@ Respond ONLY with valid JSON. No markdown code fences.`;
     if (jsonMatch) {
       return JSON.parse(jsonMatch[0]) as GeneratedDocs;
     }
+    console.error(`[DocuPilot] Failed to parse Claude response: ${text.slice(0, 500)}`);
     throw new Error("Failed to parse Claude response as JSON");
   }
 }

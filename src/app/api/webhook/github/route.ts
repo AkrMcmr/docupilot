@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
 
     // Process async - respond immediately, generate docs in background
     processDocGeneration(repoFullName, branch, commits, installationId).catch(
-      (err) => console.error("[DocuPilot] Doc generation failed:", err)
+      (err) => console.error(`[DocuPilot] Doc generation failed for ${repoFullName}@${branch}:`, err.message || err)
     );
 
     return NextResponse.json({
