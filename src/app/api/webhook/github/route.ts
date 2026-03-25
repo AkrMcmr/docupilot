@@ -88,10 +88,12 @@ async function processDocGeneration(
   const [owner, repo] = repoFullName.split("/");
   const token = await getInstallationToken(installationId);
 
-  console.log(`[DocuPilot] Generating docs for ${repoFullName}@${branch}`);
+  console.log(`[DocuPilot] Generating docs for ${repoFullName}@${branch} (installation: ${installationId})`);
+  console.log(`[DocuPilot] Token obtained, length: ${token.length}`);
 
   // 1. Fetch repo tree and source files
   const tree = await getRepoTree(token, owner, repo, branch);
+  console.log(`[DocuPilot] Tree fetched: ${tree.length} entries`);
   const sourceFiles = tree.filter(
     (f) =>
       f.type === "blob" &&
@@ -113,6 +115,7 @@ async function processDocGeneration(
     })
   );
   const validFiles = fileContents.filter(Boolean) as { path: string; content: string }[];
+  console.log(`[DocuPilot] Source files: ${sourceFiles.length} found, ${validFiles.length} read`);
 
   // 2. Get existing docs
   let existingReadme: string | undefined;
@@ -124,8 +127,12 @@ async function processDocGeneration(
     existingChangelog = await getFileContent(token, owner, repo, "CHANGELOG.md", branch);
   } catch { /* no existing changelog */ }
 
+  console.log(`[DocuPilot] Existing README: ${existingReadme ? 'yes' : 'no'}, CHANGELOG: ${existingChangelog ? 'yes' : 'no'}`);
+
   // 3. Generate docs with Claude
+  console.log(`[DocuPilot] Calling Claude API...`);
   const docs = await generateDocs(validFiles, commits, existingReadme, existingChangelog);
+  console.log(`[DocuPilot] Claude response: README=${!!docs.readme}, CHANGELOG=${!!docs.changelog}`);
 
   if (!docs.readme && !docs.changelog) {
     console.log("[DocuPilot] No docs to update");

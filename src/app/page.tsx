@@ -7,7 +7,7 @@ export default function Home() {
           DocuPilot
         </div>
         <a
-          href="https://github.com/apps/docupilot"
+          href="https://github.com/apps/pushdocs"
           className="rounded-full bg-zinc-900 px-5 py-2 text-sm font-medium text-white hover:bg-zinc-700 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-200 transition-colors"
         >
           Install GitHub App
@@ -31,7 +31,7 @@ export default function Home() {
         </p>
         <div className="mt-10 flex gap-4">
           <a
-            href="https://github.com/apps/docupilot"
+            href="https://github.com/apps/pushdocs"
             className="rounded-full bg-zinc-900 px-8 py-3 text-base font-medium text-white hover:bg-zinc-700 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-200 transition-colors"
           >
             Get Started Free
