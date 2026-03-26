@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
+import { SubscriptionCard } from "@/components/subscription-card";
 
 export default async function DashboardPage() {
   const session = await getSession();
@@ -49,25 +50,7 @@ export default async function DashboardPage() {
           <h2 className="text-lg font-semibold text-zinc-900 dark:text-white mb-4">
             Subscription
           </h2>
-          <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-sm text-zinc-500">Current plan</div>
-                <div className="text-xl font-bold text-zinc-900 dark:text-white mt-1">
-                  Free Trial
-                </div>
-                <div className="text-sm text-zinc-500 mt-1">
-                  Install the GitHub App and upgrade to start generating docs automatically.
-                </div>
-              </div>
-              <a
-                href="/#pricing"
-                className="rounded-full bg-zinc-900 px-6 py-2.5 text-sm font-medium text-white hover:bg-zinc-700 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-200 transition-colors"
-              >
-                Upgrade
-              </a>
-            </div>
-          </div>
+          <SubscriptionCard />
         </section>
 
         {/* Quick Start */}

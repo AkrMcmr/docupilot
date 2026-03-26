@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { type DocuPilotConfig, DEFAULT_CONFIG } from "./config";
 
 const anthropic = new Anthropic();
 
@@ -12,6 +13,7 @@ export async function generateDocs(
   commits: { message: string; added: string[]; modified: string[]; removed: string[] }[],
   existingReadme?: string,
   existingChangelog?: string,
+  config: DocuPilotConfig = DEFAULT_CONFIG,
 ): Promise<GeneratedDocs> {
   const filesSummary = repoFiles
     .map((f) => `### ${f.path}\n\`\`\`\n${f.content.slice(0, 3000)}\n\`\`\``)
@@ -20,6 +22,22 @@ export async function generateDocs(
   const commitsSummary = commits
     .map((c) => `- ${c.message} (added: ${c.added.join(", ")}, modified: ${c.modified.join(", ")})`)
     .join("\n");
+
+  const docTypes: string[] = [];
+  if (config.generate.readme) {
+    docTypes.push(`**readme**: A comprehensive README.md with: project title, description, features, installation, usage, API reference (if applicable), and contributing section. If an existing README exists, update it with new information while preserving its structure.`);
+  }
+  if (config.generate.changelog) {
+    docTypes.push(`**changelog**: A CHANGELOG.md entry for the latest changes based on the commits. Use Keep a Changelog format. If an existing CHANGELOG exists, prepend the new entry.`);
+  }
+
+  const languageInstruction = config.language !== "en"
+    ? `\n\nIMPORTANT: Write ALL documentation in ${config.language}. Code examples and technical terms can remain in English.`
+    : "";
+
+  const customInstruction = config.custom_instructions
+    ? `\n\nAdditional instructions from the repository owner: ${config.custom_instructions}`
+    : "";
 
   const prompt = `You are DocuPilot, an AI that generates project documentation.
 
@@ -31,15 +49,13 @@ ${commitsSummary}
 ## Source Files
 ${filesSummary}
 
-${existingReadme ? `## Current README.md\n${existingReadme}` : "## No existing README.md"}
+${config.generate.readme && existingReadme ? `## Current README.md\n${existingReadme}` : config.generate.readme ? "## No existing README.md" : ""}
 
-${existingChangelog ? `## Current CHANGELOG.md\n${existingChangelog}` : "## No existing CHANGELOG.md"}
+${config.generate.changelog && existingChangelog ? `## Current CHANGELOG.md\n${existingChangelog}` : config.generate.changelog ? "## No existing CHANGELOG.md" : ""}
 
-Generate the following as a JSON object with keys "readme" and "changelog":
+Generate the following as a JSON object with keys "readme" and "changelog" (set to null if not requested):
 
-1. **readme**: A comprehensive README.md with: project title, description, features, installation, usage, API reference (if applicable), and contributing section. If an existing README exists, update it with new information while preserving its structure.
-
-2. **changelog**: A CHANGELOG.md entry for the latest changes based on the commits. Use Keep a Changelog format. If an existing CHANGELOG exists, prepend the new entry.
+${docTypes.map((d, i) => `${i + 1}. ${d}`).join("\n\n")}${languageInstruction}${customInstruction}
 
 Respond ONLY with valid JSON. No markdown code fences.`;
 

@@ -11,6 +11,7 @@ import {
   createPullRequest,
 } from "@/lib/github";
 import { generateDocs } from "@/lib/generate-docs";
+import { parseConfig, DEFAULT_CONFIG, type DocuPilotConfig } from "@/lib/config";
 
 function verifySignature(payload: string, signature: string | null): boolean {
   const secret = process.env.GITHUB_WEBHOOK_SECRET;
@@ -91,16 +92,39 @@ async function processDocGeneration(
   console.log(`[DocuPilot] Generating docs for ${repoFullName}@${branch} (installation: ${installationId})`);
   console.log(`[DocuPilot] Token obtained, length: ${token.length}`);
 
+  // 0. Read .docupilot.yml config if it exists
+  let config: DocuPilotConfig = DEFAULT_CONFIG;
+  try {
+    const configYaml = await getFileContent(token, owner, repo, ".docupilot.yml", branch);
+    config = parseConfig(configYaml);
+    console.log(`[DocuPilot] Config loaded: generate=${JSON.stringify(config.generate)}, language=${config.language}`);
+  } catch {
+    console.log(`[DocuPilot] No .docupilot.yml found, using defaults`);
+  }
+
+  // Skip if nothing to generate
+  if (!config.generate.readme && !config.generate.changelog && !config.generate.api_docs) {
+    console.log("[DocuPilot] All doc types disabled in config, skipping");
+    return;
+  }
+
   // 1. Fetch repo tree and source files
   const tree = await getRepoTree(token, owner, repo, branch);
   console.log(`[DocuPilot] Tree fetched: ${tree.length} entries`);
+
+  const ignorePatterns = config.ignore.map((pattern) => {
+    const regex = pattern.replace(/\*\*/g, ".*").replace(/\*/g, "[^/]*");
+    return new RegExp(`^${regex}$`);
+  });
+
   const sourceFiles = tree.filter(
     (f) =>
       f.type === "blob" &&
       (f.size ?? 0) < 50000 &&
       /\.(ts|tsx|js|jsx|py|go|rs|java|rb)$/.test(f.path) &&
       !f.path.includes("node_modules") &&
-      !f.path.includes(".next")
+      !f.path.includes(".next") &&
+      !ignorePatterns.some((re) => re.test(f.path))
   );
 
   // Read up to 20 source files
@@ -120,18 +144,22 @@ async function processDocGeneration(
   // 2. Get existing docs
   let existingReadme: string | undefined;
   let existingChangelog: string | undefined;
-  try {
-    existingReadme = await getFileContent(token, owner, repo, "README.md", branch);
-  } catch { /* no existing readme */ }
-  try {
-    existingChangelog = await getFileContent(token, owner, repo, "CHANGELOG.md", branch);
-  } catch { /* no existing changelog */ }
+  if (config.generate.readme) {
+    try {
+      existingReadme = await getFileContent(token, owner, repo, "README.md", branch);
+    } catch { /* no existing readme */ }
+  }
+  if (config.generate.changelog) {
+    try {
+      existingChangelog = await getFileContent(token, owner, repo, "CHANGELOG.md", branch);
+    } catch { /* no existing changelog */ }
+  }
 
   console.log(`[DocuPilot] Existing README: ${existingReadme ? 'yes' : 'no'}, CHANGELOG: ${existingChangelog ? 'yes' : 'no'}`);
 
   // 3. Generate docs with Claude
   console.log(`[DocuPilot] Calling Claude API...`);
-  const docs = await generateDocs(validFiles, commits, existingReadme, existingChangelog);
+  const docs = await generateDocs(validFiles, commits, existingReadme, existingChangelog, config);
   console.log(`[DocuPilot] Claude response: README=${!!docs.readme}, CHANGELOG=${!!docs.changelog}`);
 
   if (!docs.readme && !docs.changelog) {

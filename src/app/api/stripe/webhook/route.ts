@@ -30,11 +30,21 @@ export async function POST(request: NextRequest) {
       const plan = session.metadata?.plan;
       const customerId = session.customer as string;
       const subscriptionId = session.subscription as string;
+      const githubUserId = session.metadata?.github_user_id;
+      const githubLogin = session.metadata?.github_login;
       console.log(
-        `[DocuPilot] New subscription: customer=${customerId} plan=${plan} subscription=${subscriptionId}`
+        `[DocuPilot] New subscription: customer=${customerId} plan=${plan} subscription=${subscriptionId} github=${githubLogin}`
       );
-      // TODO: Store subscription in database when we add one
-      // For MVP, we log and track manually
+      // Store github_user_id on the Stripe customer for future lookups
+      if (customerId && githubUserId) {
+        await getStripe().customers.update(customerId, {
+          metadata: {
+            github_user_id: githubUserId,
+            github_login: githubLogin || "",
+            plan: plan || "",
+          },
+        });
+      }
       break;
     }
     case "customer.subscription.updated": {

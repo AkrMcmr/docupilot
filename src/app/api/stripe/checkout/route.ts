@@ -27,6 +27,10 @@ export async function POST(request: NextRequest) {
       client_reference_id: String(user.id),
       customer_email: user.email || undefined,
       metadata: { plan, github_user_id: String(user.id), github_login: user.login },
+      subscription_data: {
+        metadata: { plan, github_user_id: String(user.id), github_login: user.login },
+      },
+      customer_creation: "always",
     });
 
     return NextResponse.json({ url: session.url });
