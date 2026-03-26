@@ -1,20 +1,10 @@
 import { PricingSection } from "@/components/pricing";
+import { Header } from "@/components/header";
 
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-white dark:bg-zinc-950">
-      {/* Header */}
-      <header className="flex items-center justify-between px-6 py-4 border-b border-zinc-200 dark:border-zinc-800">
-        <div className="text-xl font-bold text-zinc-900 dark:text-white">
-          DocuPilot
-        </div>
-        <a
-          href="https://github.com/apps/pushdocs"
-          className="rounded-full bg-zinc-900 px-5 py-2 text-sm font-medium text-white hover:bg-zinc-700 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-200 transition-colors"
-        >
-          Install GitHub App
-        </a>
-      </header>
+      <Header />
 
       {/* Hero */}
       <main className="flex-1 flex flex-col items-center justify-center px-6 py-24 text-center">
