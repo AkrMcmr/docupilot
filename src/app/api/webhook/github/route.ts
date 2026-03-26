@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse, after } from "next/server";
 import crypto from "crypto";
+
+export const maxDuration = 60;
+
 import {
   getInstallationToken,
   getRepoTree,
@@ -59,19 +62,20 @@ export async function POST(request: NextRequest) {
     }
 
     // Use after() to keep the serverless function alive after responding
-    after(
-      processDocGeneration(repoFullName, branch, commits, installationId).catch(
-        (err) => {
-          console.error(`[DocuPilot] Doc generation failed for ${repoFullName}@${branch}:`, err.message || err);
-          return logActivity({
-            type: "docs_failed",
-            repo: repoFullName,
-            branch,
-            error: err.message || String(err),
-          }).catch(() => {});
-        }
-      )
-    );
+    after(async () => {
+      try {
+        await processDocGeneration(repoFullName, branch, commits, installationId);
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : String(err);
+        console.error(`[DocuPilot] Doc generation failed for ${repoFullName}@${branch}:`, message);
+        await logActivity({
+          type: "docs_failed",
+          repo: repoFullName,
+          branch,
+          error: message,
+        }).catch(() => {});
+      }
+    });
 
     return NextResponse.json({
       status: "queued",
