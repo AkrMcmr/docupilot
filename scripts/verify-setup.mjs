@@ -4,6 +4,32 @@
 //
 // Requires env vars to be set (via .env.local or environment).
 
+import https from "node:https";
+
+function fetchJSON(url, options = {}) {
+  return new Promise((resolve, reject) => {
+    const urlObj = new URL(url);
+    const req = https.request(
+      {
+        hostname: urlObj.hostname,
+        path: urlObj.pathname + urlObj.search,
+        method: options.method || "GET",
+        headers: options.headers || {},
+      },
+      (res) => {
+        let data = "";
+        res.on("data", (chunk) => (data += chunk));
+        res.on("end", () => {
+          resolve({ ok: res.statusCode >= 200 && res.statusCode < 300, status: res.statusCode, data });
+        });
+      }
+    );
+    req.on("error", reject);
+    if (options.body) req.write(options.body);
+    req.end();
+  });
+}
+
 const CHECKS = [
   {
     name: "GITHUB_APP_ID",
@@ -78,22 +104,27 @@ const CHECKS = [
 
 async function checkAnthropicAPI(apiKey) {
   try {
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
+    const body = JSON.stringify({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 5,
+      messages: [{ role: "user", content: "Hi" }],
+    });
+    const res = await fetchJSON("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
         "x-api-key": apiKey,
         "anthropic-version": "2023-06-01",
         "content-type": "application/json",
       },
-      body: JSON.stringify({
-        model: "claude-haiku-4-5-20251001",
-        max_tokens: 5,
-        messages: [{ role: "user", content: "Hi" }],
-      }),
+      body,
     });
     if (res.ok) return { ok: true };
-    const body = await res.json().catch(() => ({}));
-    return { ok: false, error: `${res.status} ${body?.error?.message || ""}` };
+    try {
+      const parsed = JSON.parse(res.data);
+      return { ok: false, error: `${res.status} ${parsed?.error?.message || ""}` };
+    } catch {
+      return { ok: false, error: `${res.status}` };
+    }
   } catch (e) {
     return { ok: false, error: e.message };
   }
@@ -101,7 +132,7 @@ async function checkAnthropicAPI(apiKey) {
 
 async function checkStripeAPI(secretKey) {
   try {
-    const res = await fetch("https://api.stripe.com/v1/products?limit=1", {
+    const res = await fetchJSON("https://api.stripe.com/v1/products?limit=1", {
       headers: { Authorization: `Bearer ${secretKey}` },
     });
     if (res.ok) return { ok: true };
@@ -112,15 +143,8 @@ async function checkStripeAPI(secretKey) {
 }
 
 async function checkGitHubApp(appId) {
-  try {
-    const res = await fetch(`https://api.github.com/app`, {
-      headers: { Accept: "application/vnd.github+json" },
-    });
-    // Without JWT auth, we just check the env var format
-    return { ok: /^\d+$/.test(appId), note: "Format OK (auth test requires JWT)" };
-  } catch (e) {
-    return { ok: false, error: e.message };
-  }
+  // Without JWT auth, we just check the env var format
+  return { ok: /^\d+$/.test(appId), note: "Format OK (auth test requires JWT)" };
 }
 
 async function main() {
