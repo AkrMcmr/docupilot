@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
 import { SubscriptionCard } from "@/components/subscription-card";
+import { ActivityFeed } from "@/components/activity-feed";
 
 export default async function DashboardPage() {
   const session = await getSession();
@@ -107,14 +108,12 @@ export default async function DashboardPage() {
           </div>
         </section>
 
-        {/* Recent Activity (placeholder) */}
+        {/* Recent Activity */}
         <section>
           <h2 className="text-lg font-semibold text-zinc-900 dark:text-white mb-4">
             Recent Activity
           </h2>
-          <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 p-6 text-center text-zinc-500">
-            No documentation updates yet. Push code to a monitored repository to get started.
-          </div>
+          <ActivityFeed />
         </section>
       </main>
     </div>

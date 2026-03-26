@@ -12,6 +12,7 @@ import {
 } from "@/lib/github";
 import { generateDocs } from "@/lib/generate-docs";
 import { parseConfig, DEFAULT_CONFIG, type DocuPilotConfig } from "@/lib/config";
+import { logActivity } from "@/lib/activity";
 
 function verifySignature(payload: string, signature: string | null): boolean {
   const secret = process.env.GITHUB_WEBHOOK_SECRET;
@@ -59,7 +60,15 @@ export async function POST(request: NextRequest) {
 
     // Process async - respond immediately, generate docs in background
     processDocGeneration(repoFullName, branch, commits, installationId).catch(
-      (err) => console.error(`[DocuPilot] Doc generation failed for ${repoFullName}@${branch}:`, err.message || err)
+      (err) => {
+        console.error(`[DocuPilot] Doc generation failed for ${repoFullName}@${branch}:`, err.message || err);
+        logActivity({
+          type: "docs_failed",
+          repo: repoFullName,
+          branch,
+          error: err.message || String(err),
+        }).catch(() => {});
+      }
     );
 
     return NextResponse.json({
@@ -74,6 +83,16 @@ export async function POST(request: NextRequest) {
     const action = payload.action;
     const sender = payload.sender?.login;
     console.log(`[DocuPilot] App ${action} by ${sender}`);
+
+    if (action === "created") {
+      const repos = payload.repositories?.map((r: { full_name: string }) => r.full_name) || [];
+      for (const repoName of repos) {
+        await logActivity({ type: "app_installed", repo: repoName, userId: sender });
+      }
+    } else if (action === "deleted") {
+      await logActivity({ type: "app_uninstalled", repo: sender || "unknown", userId: sender });
+    }
+
     return NextResponse.json({ status: "ok", event, action });
   }
 
@@ -197,4 +216,16 @@ async function processDocGeneration(
     branchName, branch
   );
   console.log(`[DocuPilot] PR created: ${pr.html_url}`);
+
+  const filesUpdated = [
+    ...(docs.readme ? ["README.md"] : []),
+    ...(docs.changelog ? ["CHANGELOG.md"] : []),
+  ];
+  await logActivity({
+    type: "docs_generated",
+    repo: repoFullName,
+    branch,
+    prUrl: pr.html_url,
+    filesUpdated,
+  });
 }
