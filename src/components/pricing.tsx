@@ -36,6 +36,9 @@ export function PricingSection() {
           <h3 className="text-lg font-semibold text-zinc-900 dark:text-white">
             Starter
           </h3>
+          <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+            For solo developers and small open-source projects
+          </p>
           <div className="mt-4 text-4xl font-bold text-zinc-900 dark:text-white">
             $9<span className="text-lg font-normal text-zinc-500">/mo</span>
           </div>
@@ -56,6 +59,9 @@ export function PricingSection() {
           <h3 className="text-lg font-semibold text-zinc-900 dark:text-white">
             Pro
           </h3>
+          <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+            For teams and professionals managing multiple repositories
+          </p>
           <div className="mt-4 text-4xl font-bold text-zinc-900 dark:text-white">
             $29
             <span className="text-lg font-normal text-zinc-500">/mo</span>

@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DocuPilot
 
-## Getting Started
+**Your docs, always up to date. Automatically.**
 
-First, run the development server:
+DocuPilot generates and updates your README, API documentation, and CHANGELOG every time you push to GitHub. Install the GitHub App, push your code, and get a pull request with updated docs — zero config required.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## How It Works
+
+1. **Install** — Add the [PushDocs GitHub App](https://github.com/apps/pushdocs) to your repositories
+2. **Push** — Push code as you normally do
+3. **Review** — DocuPilot opens a PR with updated documentation
+
+DocuPilot reads your codebase, understands the changes, and generates accurate documentation using AI. You review and merge — that's it.
+
+## Features
+
+- **README generation** — Keeps your README in sync with your actual code
+- **CHANGELOG updates** — Automatically documents what changed and why
+- **API documentation** — Generates docs from your API endpoints and types
+- **Zero config** — Works out of the box with sensible defaults
+- **Customizable** — Fine-tune behavior with `.docupilot.yml`
+- **Pull request workflow** — All changes come as reviewable PRs, never direct commits
+
+## Configuration
+
+Create a `.docupilot.yml` in your repository root to customize behavior:
+
+```yaml
+# Which docs to generate (all true by default except api_docs)
+generate:
+  readme: true
+  changelog: true
+  api_docs: false
+
+# Documentation language
+language: en
+
+# Files/patterns to exclude from analysis
+ignore:
+  - "**/*.test.ts"
+  - "**/__snapshots__/**"
+  - "node_modules/**"
+
+# Auto-merge generated PRs (default: false)
+auto_merge: false
+
+# Additional instructions for the AI
+custom_instructions: "Use concise language. Focus on usage examples."
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+If no config file is present, DocuPilot uses sensible defaults (README + CHANGELOG, English, no auto-merge).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Pricing
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Plan | Price | Repos | Features |
+|------|-------|-------|----------|
+| **Starter** | $9/mo | Up to 5 | README, CHANGELOG |
+| **Pro** | $29/mo | Unlimited | All docs + API docs + custom instructions |
 
-## Learn More
+## Tech Stack
 
-To learn more about Next.js, take a look at the following resources:
+- [Next.js](https://nextjs.org) — App framework
+- [Vercel](https://vercel.com) — Hosting & deployment
+- [GitHub App](https://docs.github.com/en/apps) — Repository integration
+- [Claude API](https://docs.anthropic.com) — AI documentation generation
+- [Stripe](https://stripe.com) — Billing & subscriptions
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Development
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm install
+npm run dev
+```
 
-## Deploy on Vercel
+Requires environment variables — see `.env.example` for the full list.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Proprietary. All rights reserved.
