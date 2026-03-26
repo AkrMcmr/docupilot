@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 import crypto from "crypto";
 import {
   getInstallationToken,
@@ -58,17 +58,19 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ status: "skipped", reason: "no installation id" });
     }
 
-    // Process async - respond immediately, generate docs in background
-    processDocGeneration(repoFullName, branch, commits, installationId).catch(
-      (err) => {
-        console.error(`[DocuPilot] Doc generation failed for ${repoFullName}@${branch}:`, err.message || err);
-        logActivity({
-          type: "docs_failed",
-          repo: repoFullName,
-          branch,
-          error: err.message || String(err),
-        }).catch(() => {});
-      }
+    // Use after() to keep the serverless function alive after responding
+    after(
+      processDocGeneration(repoFullName, branch, commits, installationId).catch(
+        (err) => {
+          console.error(`[DocuPilot] Doc generation failed for ${repoFullName}@${branch}:`, err.message || err);
+          return logActivity({
+            type: "docs_failed",
+            repo: repoFullName,
+            branch,
+            error: err.message || String(err),
+          }).catch(() => {});
+        }
+      )
     );
 
     return NextResponse.json({
