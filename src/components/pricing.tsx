@@ -4,10 +4,6 @@ import { useState } from "react";
 
 export function PricingSection() {
   const [loading, setLoading] = useState<"starter" | "pro" | null>(null);
-  const [email, setEmail] = useState("");
-  const [waitlistDone, setWaitlistDone] = useState(false);
-  const [waitlistLoading, setWaitlistLoading] = useState(false);
-
   async function handleCheckout(plan: "starter" | "pro") {
     setLoading(plan);
     try {
@@ -17,6 +13,10 @@ export function PricingSection() {
         body: JSON.stringify({ plan }),
       });
       const data = await res.json();
+      if (res.status === 401) {
+        window.location.href = "/api/auth/login";
+        return;
+      }
       if (data.url) {
         window.location.href = data.url;
       } else {
@@ -26,23 +26,6 @@ export function PricingSection() {
       alert("Failed to start checkout");
     } finally {
       setLoading(null);
-    }
-  }
-
-  async function handleWaitlist(e: React.FormEvent) {
-    e.preventDefault();
-    setWaitlistLoading(true);
-    try {
-      await fetch("/api/waitlist", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-      setWaitlistDone(true);
-    } catch {
-      alert("Something went wrong. Please try again.");
-    } finally {
-      setWaitlistLoading(false);
     }
   }
 
@@ -102,36 +85,9 @@ export function PricingSection() {
         </div>
       </div>
 
-      <div className="mt-12 max-w-md mx-auto text-center">
-        {waitlistDone ? (
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">
-            You&apos;re on the list! We&apos;ll notify you when payments go live.
-          </p>
-        ) : (
-          <>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-4">
-              Payments launching soon — join the waitlist to get notified.
-            </p>
-            <form onSubmit={handleWaitlist} className="flex gap-2">
-              <input
-                type="email"
-                required
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="flex-1 rounded-full border border-zinc-300 dark:border-zinc-700 bg-transparent px-4 py-2 text-sm text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-white"
-              />
-              <button
-                type="submit"
-                disabled={waitlistLoading}
-                className="rounded-full bg-zinc-900 px-5 py-2 text-sm font-medium text-white hover:bg-zinc-700 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-200 transition-colors disabled:opacity-50"
-              >
-                {waitlistLoading ? "..." : "Notify me"}
-              </button>
-            </form>
-          </>
-        )}
-      </div>
+      <p className="mt-8 text-sm text-zinc-500 dark:text-zinc-400">
+        Free to try — install the GitHub App first, subscribe when you&apos;re ready.
+      </p>
     </section>
   );
 }
