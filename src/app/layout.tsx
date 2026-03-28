@@ -14,6 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://docupilot-alpha.vercel.app"),
   title: "DocuPilot - AI-Powered Documentation for Your Code",
   description:
     "Automatically generate and update README, API docs, and CHANGELOG on every push. Just install the GitHub App. Starting at $9/month.",
