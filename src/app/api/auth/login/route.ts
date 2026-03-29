@@ -13,7 +13,7 @@ export async function GET() {
   const params = new URLSearchParams({
     client_id: clientId,
     redirect_uri: `${baseUrl}/api/auth/callback`,
-    scope: "read:user user:email",
+    scope: "read:user user:email repo",
     state,
   });
 

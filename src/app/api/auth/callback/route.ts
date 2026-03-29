@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createSessionToken, SESSION_COOKIE, SESSION_MAX_AGE } from "@/lib/auth";
 import type { User } from "@/lib/auth";
+import { kv } from "@vercel/kv";
 
 export async function GET(request: NextRequest) {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://docupilot-alpha.vercel.app";
@@ -62,6 +63,14 @@ export async function GET(request: NextRequest) {
   };
 
   console.log(`[DocuPilot] User logged in: ${user.login} (${user.id})`);
+
+  // Store OAuth token in KV for webhook use (repo scope needed for PR creation)
+  try {
+    await kv.set(`user:${user.id}:token`, tokenData.access_token, { ex: SESSION_MAX_AGE });
+    console.log(`[DocuPilot] Stored OAuth token for user ${user.login} (${user.id})`);
+  } catch (err) {
+    console.error("[DocuPilot] Failed to store OAuth token in KV:", err);
+  }
 
   const sessionToken = createSessionToken(user, tokenData.access_token);
   const response = NextResponse.redirect(`${baseUrl}/dashboard`);
