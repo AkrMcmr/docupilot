@@ -2,7 +2,11 @@
 
 **Your docs, always up to date. Automatically.**
 
+[![Try DocuPilot](https://img.shields.io/badge/Try%20it-Free-blue)](https://docupilot-alpha.vercel.app) [![Install GitHub App](https://img.shields.io/badge/GitHub%20App-Install-green)](https://github.com/apps/pushdocs/installations/select_target)
+
 DocuPilot generates and updates your README, API documentation, and CHANGELOG every time you push to GitHub. Install the GitHub App, push your code, and get a pull request with updated docs — zero config required.
+
+**[Get Started Free](https://docupilot-alpha.vercel.app)** — No credit card required.
 
 ## How It Works
 
@@ -54,8 +58,11 @@ If no config file is present, DocuPilot uses sensible defaults (README + CHANGEL
 
 | Plan | Price | Repos | Features |
 |------|-------|-------|----------|
+| **Free** | $0/mo | 1 | README, CHANGELOG |
 | **Starter** | $9/mo | Up to 5 | README, CHANGELOG |
-| **Pro** | $29/mo | Unlimited | All docs + API docs + custom instructions |
+| **Pro** | $29/mo | Unlimited | All docs + API docs + custom templates |
+
+Competitors like Mintlify charge $300+/mo. DocuPilot starts free.
 
 ## Tech Stack
 
