@@ -34,7 +34,29 @@ export function PricingSection() {
       <h2 className="text-3xl font-bold text-zinc-900 dark:text-white mb-16">
         Simple pricing
       </h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+        <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 p-8 text-left">
+          <h3 className="text-lg font-semibold text-zinc-900 dark:text-white">
+            Free
+          </h3>
+          <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+            Try DocuPilot on one project, no credit card required
+          </p>
+          <div className="mt-4 text-4xl font-bold text-zinc-900 dark:text-white">
+            $0<span className="text-lg font-normal text-zinc-500">/mo</span>
+          </div>
+          <ul className="mt-6 space-y-3 text-zinc-600 dark:text-zinc-400 text-sm">
+            <li>1 repository</li>
+            <li>README + CHANGELOG auto-update</li>
+            <li>Community support</li>
+          </ul>
+          <a
+            href="https://github.com/apps/pushdocs"
+            className="mt-8 w-full rounded-full border border-zinc-300 dark:border-zinc-700 px-6 py-2.5 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors inline-block text-center"
+          >
+            Install Free
+          </a>
+        </div>
         <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 p-8 text-left">
           <h3 className="text-lg font-semibold text-zinc-900 dark:text-white">
             Starter
@@ -86,7 +108,7 @@ export function PricingSection() {
       </div>
 
       <p className="mt-8 text-sm text-zinc-500 dark:text-zinc-400">
-        Free to try — install the GitHub App first, subscribe when you&apos;re ready.
+        No credit card required. Install the GitHub App and start generating docs instantly.
       </p>
     </section>
   );
