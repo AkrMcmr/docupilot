@@ -1,9 +1,43 @@
 import { PricingSection } from "@/components/pricing";
 import { Header } from "@/components/header";
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "DocuPilot",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Web",
+      "url": "https://docupilot-alpha.vercel.app",
+      "description": "GitHub App that automatically generates and updates README, CHANGELOG, and API docs on every push.",
+      "offers": [
+        { "@type": "Offer", "price": "0", "priceCurrency": "USD", "name": "Free" },
+        { "@type": "Offer", "price": "9", "priceCurrency": "USD", "name": "Starter" },
+        { "@type": "Offer", "price": "29", "priceCurrency": "USD", "name": "Pro" },
+      ],
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "Is my code sent to a third party?", "acceptedAnswer": { "@type": "Answer", "text": "DocuPilot reads only the diff of each push — not your full codebase. The diff is sent to the AI model to generate doc updates, then immediately discarded. Your code is never stored." } },
+        { "@type": "Question", "name": "What languages and frameworks are supported?", "acceptedAnswer": { "@type": "Answer", "text": "Any language that lives in a Git repo. DocuPilot analyzes code changes contextually, so it works with JavaScript, Python, Go, Rust, Java, and more — no configuration needed." } },
+        { "@type": "Question", "name": "Can I customize the generated docs?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Add a .docupilot.yml file to your repo to control which docs are generated, the writing style, and sections to include or exclude." } },
+        { "@type": "Question", "name": "What if I don't like a generated update?", "acceptedAnswer": { "@type": "Answer", "text": "Every update comes as a pull request. You review it, request changes, or close it — just like any other PR. Nothing is merged without your approval." } },
+        { "@type": "Question", "name": "How is this different from Copilot or ChatGPT?", "acceptedAnswer": { "@type": "Answer", "text": "Those tools require you to prompt and edit manually. DocuPilot runs automatically on every push and opens a PR — zero effort after setup." } },
+        { "@type": "Question", "name": "Can I try it before paying?", "acceptedAnswer": { "@type": "Answer", "text": "Absolutely. The Free plan gives you 1 repo with full functionality, forever. No credit card required." } },
+      ],
+    },
+  ],
+};
+
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-white dark:bg-zinc-950">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Header />
 
       {/* Hero */}
