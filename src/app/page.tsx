@@ -117,6 +117,50 @@ export default function Home() {
 
         {/* Pricing */}
         <PricingSection />
+
+        {/* FAQ */}
+        <section className="mt-32 w-full max-w-4xl">
+          <h2 className="text-3xl font-bold text-zinc-900 dark:text-white mb-12">
+            Frequently Asked Questions
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
+            {[
+              {
+                q: "Is my code sent to a third party?",
+                a: "DocuPilot reads only the diff of each push — not your full codebase. The diff is sent to the AI model to generate doc updates, then immediately discarded. Your code is never stored.",
+              },
+              {
+                q: "What languages and frameworks are supported?",
+                a: "Any language that lives in a Git repo. DocuPilot analyzes code changes contextually, so it works with JavaScript, Python, Go, Rust, Java, and more — no configuration needed.",
+              },
+              {
+                q: "Can I customize the generated docs?",
+                a: "Yes. Add a .docupilot.yml file to your repo to control which docs are generated, the writing style, and sections to include or exclude.",
+              },
+              {
+                q: "What if I don't like a generated update?",
+                a: "Every update comes as a pull request. You review it, request changes, or close it — just like any other PR. Nothing is merged without your approval.",
+              },
+              {
+                q: "How is this different from Copilot or ChatGPT?",
+                a: "Those tools require you to prompt and edit manually. DocuPilot runs automatically on every push and opens a PR — zero effort after setup.",
+              },
+              {
+                q: "Can I try it before paying?",
+                a: "Absolutely. The Free plan gives you 1 repo with full functionality, forever. No credit card required.",
+              },
+            ].map((item) => (
+              <div key={item.q}>
+                <h3 className="font-semibold text-zinc-900 dark:text-white mb-2">
+                  {item.q}
+                </h3>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                  {item.a}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
       </main>
 
       {/* Footer */}
