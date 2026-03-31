@@ -275,6 +275,18 @@ export default function Home() {
             >
               Blog
             </a>
+            <a
+              href="/compare/mintlify"
+              className="hover:text-zinc-900 dark:hover:text-white transition-colors"
+            >
+              vs Mintlify
+            </a>
+            <a
+              href="/compare/readme"
+              className="hover:text-zinc-900 dark:hover:text-white transition-colors"
+            >
+              vs ReadMe
+            </a>
           </div>
         </div>
       </footer>
