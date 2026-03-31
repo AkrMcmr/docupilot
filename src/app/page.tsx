@@ -269,6 +269,12 @@ export default function Home() {
             >
               Community
             </a>
+            <a
+              href="/blog/auto-documentation-github"
+              className="hover:text-zinc-900 dark:hover:text-white transition-colors"
+            >
+              Blog
+            </a>
           </div>
         </div>
       </footer>
