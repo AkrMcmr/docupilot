@@ -24,6 +24,8 @@ DocuPilot reads your codebase, understands the changes, and generates accurate d
 - **Zero config** — Works out of the box with sensible defaults
 - **Customizable** — Fine-tune behavior with `.docupilot.yml`
 - **Pull request workflow** — All changes come as reviewable PRs, never direct commits
+- **Privacy & compliance pages** — Built-in Privacy Policy and Terms of Service (Stripe-compliant)
+- **GitHub Action support** — Run doc generation directly in your CI/CD workflow
 
 ## Try It Now
 
@@ -42,6 +44,8 @@ Prefer CI/CD? Use the [DocuPilot Action](https://github.com/AkrMcmr/docupilot-ac
   with:
     anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
 ```
+
+The action also supports a `workflow_dispatch` trigger, so you can run doc generation on demand from the GitHub Actions UI.
 
 ## Configuration
 
@@ -82,13 +86,45 @@ If no config file is present, DocuPilot uses sensible defaults (README + CHANGEL
 
 Competitors like Mintlify charge $300+/mo. DocuPilot starts free.
 
+## Compare
+
+- [DocuPilot vs Mintlify](https://docupilot-alpha.vercel.app/compare/mintlify)
+- [DocuPilot vs ReadMe](https://docupilot-alpha.vercel.app/compare/readme)
+- [DocuPilot vs Documentation.AI](https://docupilot-alpha.vercel.app/compare/documentation-ai)
+
+## Privacy & Security
+
+- DocuPilot reads only the **diff** of each push — not your full codebase
+- Diffs are sent to the AI model to generate updates, then **immediately discarded**
+- Your code is never stored
+- Billing is handled entirely by Stripe; we never store card details
+- Full details: [Privacy Policy](https://docupilot-alpha.vercel.app/privacy) · [Terms of Service](https://docupilot-alpha.vercel.app/terms)
+
 ## Tech Stack
 
-- [Next.js](https://nextjs.org) — App framework
-- [Vercel](https://vercel.com) — Hosting & deployment
-- [GitHub App](https://docs.github.com/en/apps) — Repository integration
-- [Claude API](https://docs.anthropic.com) — AI documentation generation
+- [Next.js 16](https://nextjs.org) — App framework
+- [Vercel](https://vercel.com) — Hosting, deployment & KV storage
+- [GitHub App](https://docs.github.com/en/apps) — Repository integration via webhooks
+- [Claude API](https://docs.anthropic.com) (Anthropic) — AI documentation generation
 - [Stripe](https://stripe.com) — Billing & subscriptions
+- [Tailwind CSS v4](https://tailwindcss.com) — Styling
+
+## API Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/api/auth/login` | Initiate GitHub OAuth flow |
+| `GET` | `/api/auth/callback` | GitHub OAuth callback handler |
+| `GET` | `/api/auth/logout` | Clear session and redirect home |
+| `GET` | `/api/auth/me` | Return current authenticated user |
+| `POST` | `/api/webhook/github` | Receive GitHub push/installation webhooks |
+| `POST` | `/api/stripe/checkout` | Create a Stripe Checkout session |
+| `POST` | `/api/stripe/webhook` | Handle Stripe billing events |
+| `GET` | `/api/user/subscription` | Get the current user's subscription status |
+| `GET` | `/api/user/activity` | Get documentation activity feed |
+| `GET` | `/api/health` | Service health check (env vars + API connectivity) |
+| `GET` | `/api/stats` | Aggregate user and repo counts |
+| `POST` | `/api/waitlist` | Add an email to the waitlist |
 
 ## Development
 
@@ -97,7 +133,24 @@ npm install
 npm run dev
 ```
 
-Requires environment variables — see `.env.example` for the full list.
+Requires environment variables — see `.env.example` for the full list. Key variables include:
+
+| Variable | Description |
+|----------|-------------|
+| `GITHUB_APP_ID` | GitHub App ID |
+| `GITHUB_APP_PRIVATE_KEY` | GitHub App private key |
+| `GITHUB_WEBHOOK_SECRET` | Webhook signature secret |
+| `GITHUB_OAUTH_CLIENT_ID` | OAuth App client ID |
+| `GITHUB_OAUTH_CLIENT_SECRET` | OAuth App client secret |
+| `ANTHROPIC_API_KEY` | Claude API key |
+| `STRIPE_SECRET_KEY` | Stripe secret key |
+| `STRIPE_STARTER_PRICE_ID` | Stripe price ID for Starter plan |
+| `STRIPE_PRO_PRICE_ID` | Stripe price ID for Pro plan |
+| `STRIPE_WEBHOOK_SECRET` | Stripe webhook signing secret |
+| `SESSION_SECRET` | Session token signing secret |
+| `KV_REST_API_URL` | Vercel KV endpoint |
+| `KV_REST_API_TOKEN` | Vercel KV auth token |
+| `NEXT_PUBLIC_APP_URL` | Public base URL (e.g. `https://docupilot-alpha.vercel.app`) |
 
 ## License
 
