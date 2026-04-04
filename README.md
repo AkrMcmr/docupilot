@@ -25,6 +25,16 @@ DocuPilot reads your codebase, understands the changes, and generates accurate d
 - **Customizable** — Fine-tune behavior with `.docupilot.yml`
 - **Pull request workflow** — All changes come as reviewable PRs, never direct commits
 
+## GitHub Action
+
+Prefer CI/CD? Use the [DocuPilot Action](https://github.com/AkrMcmr/docupilot-action) — same AI doc generation, runs in your workflow:
+
+```yaml
+- uses: AkrMcmr/docupilot-action@v1
+  with:
+    anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+```
+
 ## Configuration
 
 Create a `.docupilot.yml` in your repository root to customize behavior:
