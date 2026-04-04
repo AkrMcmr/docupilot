@@ -24,6 +24,8 @@ DocuPilot reads your codebase, understands the changes, and generates accurate d
 - **Zero config** — Works out of the box with sensible defaults
 - **Customizable** — Fine-tune behavior with `.docupilot.yml`
 - **Pull request workflow** — All changes come as reviewable PRs, never direct commits
+- **Privacy Policy & Terms of Service** — Stripe-compliant legal pages at `/privacy` and `/terms`
+- **Comparison pages** — Side-by-side comparisons with Mintlify, ReadMe, and Documentation.AI
 
 ## GitHub Action
 
@@ -34,6 +36,42 @@ Prefer CI/CD? Use the [DocuPilot Action](https://github.com/AkrMcmr/docupilot-ac
   with:
     anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
 ```
+
+The workflow also supports `workflow_dispatch` for manual triggering. See [`.github/workflows/docupilot.yml`](.github/workflows/docupilot.yml) for the full configuration, including the self-documentation workflow that keeps this README up to date.
+
+## Pages & Routes
+
+| Route | Description |
+|-------|-------------|
+| `/` | Landing page with hero, features, pricing, and FAQ |
+| `/dashboard` | User dashboard — subscription status and activity feed |
+| `/setup` | One-click GitHub App creation via manifest flow |
+| `/blog/auto-documentation-github` | Blog post: how DocuPilot works |
+| `/compare/mintlify` | DocuPilot vs Mintlify comparison |
+| `/compare/readme` | DocuPilot vs ReadMe comparison |
+| `/compare/documentation-ai` | DocuPilot vs Documentation.AI comparison |
+| `/privacy` | Privacy Policy (Stripe-compliant) |
+| `/terms` | Terms of Service (Stripe-compliant) |
+| `/checkout/success` | Post-payment confirmation |
+| `/checkout/cancel` | Cancelled checkout landing |
+
+## API Reference
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/auth/login` | GET | Initiates GitHub OAuth flow |
+| `/api/auth/callback` | GET | GitHub OAuth callback; creates session |
+| `/api/auth/logout` | GET | Clears session cookie |
+| `/api/auth/me` | GET | Returns current authenticated user |
+| `/api/webhook/github` | POST | Receives GitHub push/installation events |
+| `/api/stripe/checkout` | POST | Creates a Stripe Checkout session |
+| `/api/stripe/webhook` | POST | Handles Stripe billing events |
+| `/api/user/subscription` | GET | Returns the authenticated user's subscription |
+| `/api/user/activity` | GET | Returns recent activity for the user |
+| `/api/health` | GET | Service health check (env vars + API connectivity) |
+| `/api/stats` | GET | Aggregate user and repo counts |
+| `/api/waitlist` | POST | Adds an email to the waitlist |
+| `/api/setup/callback` | GET | Completes GitHub App manifest flow |
 
 ## Configuration
 
@@ -72,15 +110,37 @@ If no config file is present, DocuPilot uses sensible defaults (README + CHANGEL
 | **Starter** | $9/mo | Up to 5 | README, CHANGELOG |
 | **Pro** | $29/mo | Unlimited | All docs + API docs + custom templates |
 
-Competitors like Mintlify charge $300+/mo. DocuPilot starts free.
+Competitors like Mintlify charge $300+/mo. DocuPilot starts free. See our [comparison pages](/compare/mintlify) for a detailed breakdown.
 
 ## Tech Stack
 
-- [Next.js](https://nextjs.org) — App framework
-- [Vercel](https://vercel.com) — Hosting & deployment
-- [GitHub App](https://docs.github.com/en/apps) — Repository integration
-- [Claude API](https://docs.anthropic.com) — AI documentation generation
+- [Next.js 16](https://nextjs.org) — App framework (App Router)
+- [React 19](https://react.dev) — UI library
+- [Tailwind CSS 4](https://tailwindcss.com) — Styling
+- [Vercel](https://vercel.com) — Hosting, deployment, and KV storage
+- [GitHub App](https://docs.github.com/en/apps) — Repository integration via `pushdocs`
+- [Claude API (Anthropic)](https://docs.anthropic.com) — AI documentation generation
 - [Stripe](https://stripe.com) — Billing & subscriptions
+- [Vercel KV](https://vercel.com/docs/storage/vercel-kv) — Session and OAuth token storage
+
+## Environment Variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `GITHUB_APP_ID` | Yes | GitHub App ID |
+| `GITHUB_APP_PRIVATE_KEY` | Yes | GitHub App private key (PEM) |
+| `GITHUB_WEBHOOK_SECRET` | Yes | Webhook signature secret |
+| `GITHUB_OAUTH_CLIENT_ID` | Yes | OAuth App client ID |
+| `GITHUB_OAUTH_CLIENT_SECRET` | Yes | OAuth App client secret |
+| `ANTHROPIC_API_KEY` | Yes | Claude API key |
+| `STRIPE_SECRET_KEY` | Yes | Stripe secret key |
+| `STRIPE_STARTER_PRICE_ID` | Yes | Stripe price ID for Starter plan |
+| `STRIPE_PRO_PRICE_ID` | Yes | Stripe price ID for Pro plan |
+| `STRIPE_WEBHOOK_SECRET` | Yes | Stripe webhook signing secret |
+| `SESSION_SECRET` | Yes | Secret for signing session JWTs |
+| `KV_REST_API_URL` | Yes | Vercel KV REST URL |
+| `KV_REST_API_TOKEN` | Yes | Vercel KV REST token |
+| `NEXT_PUBLIC_APP_URL` | No | Public base URL (defaults to `https://docupilot-alpha.vercel.app`) |
 
 ## Development
 
@@ -89,7 +149,7 @@ npm install
 npm run dev
 ```
 
-Requires environment variables — see `.env.example` for the full list.
+The health check endpoint at `/api/health` reports connectivity status for all external services and confirms all required environment variables are set.
 
 ## License
 
