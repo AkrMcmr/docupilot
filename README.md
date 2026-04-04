@@ -25,6 +25,14 @@ DocuPilot reads your codebase, understands the changes, and generates accurate d
 - **Customizable** — Fine-tune behavior with `.docupilot.yml`
 - **Pull request workflow** — All changes come as reviewable PRs, never direct commits
 
+## Try It Now
+
+**[docupilot-demo](https://github.com/AkrMcmr/docupilot-demo)** — Fork the template repo, push a change, and see DocuPilot generate docs in 30 seconds.
+
+See real auto-generated PRs:
+- [docupilot#2](https://github.com/AkrMcmr/docupilot/pull/2) — README + CHANGELOG update (+57 lines)
+- [docupilot-action#1](https://github.com/AkrMcmr/docupilot-action/pull/1) — README + CHANGELOG (+38 lines)
+
 ## GitHub Action
 
 Prefer CI/CD? Use the [DocuPilot Action](https://github.com/AkrMcmr/docupilot-action) — same AI doc generation, runs in your workflow:
