@@ -233,6 +233,10 @@ export default function CompareReadMe() {
           DocuPilot vs Mintlify
         </a>{" "}
         &middot;{" "}
+        <a href="/compare/documentation-ai" className="hover:text-zinc-600 dark:hover:text-zinc-400">
+          DocuPilot vs Documentation.AI
+        </a>{" "}
+        &middot;{" "}
         <a href="/blog/auto-documentation-github" className="hover:text-zinc-600 dark:hover:text-zinc-400">
           Blog
         </a>

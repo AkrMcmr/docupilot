@@ -288,6 +288,12 @@ export default function Home() {
               vs ReadMe
             </a>
             <a
+              href="/compare/documentation-ai"
+              className="hover:text-zinc-900 dark:hover:text-white transition-colors"
+            >
+              vs Documentation.AI
+            </a>
+            <a
               href="/privacy"
               className="hover:text-zinc-900 dark:hover:text-white transition-colors"
             >
