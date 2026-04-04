@@ -24,6 +24,7 @@ DocuPilot reads your codebase, understands the changes, and generates accurate d
 - **Zero config** — Works out of the box with sensible defaults
 - **Customizable** — Fine-tune behavior with `.docupilot.yml`
 - **Pull request workflow** — All changes come as reviewable PRs, never direct commits
+- **Duplicate PR prevention** — Reuses existing open DocuPilot PRs instead of creating duplicates
 
 ## Try It Now
 
@@ -82,6 +83,12 @@ If no config file is present, DocuPilot uses sensible defaults (README + CHANGEL
 
 Competitors like Mintlify charge $300+/mo. DocuPilot starts free.
 
+## Comparisons
+
+- [DocuPilot vs Mintlify](https://docupilot-alpha.vercel.app/compare/mintlify)
+- [DocuPilot vs ReadMe](https://docupilot-alpha.vercel.app/compare/readme)
+- [DocuPilot vs Documentation.AI](https://docupilot-alpha.vercel.app/compare/documentation-ai)
+
 ## Tech Stack
 
 - [Next.js](https://nextjs.org) — App framework
@@ -89,6 +96,23 @@ Competitors like Mintlify charge $300+/mo. DocuPilot starts free.
 - [GitHub App](https://docs.github.com/en/apps) — Repository integration
 - [Claude API](https://docs.anthropic.com) — AI documentation generation
 - [Stripe](https://stripe.com) — Billing & subscriptions
+- [Vercel KV](https://vercel.com/docs/storage/vercel-kv) — Session & token storage
+
+## API Routes
+
+| Route | Method | Description |
+|-------|--------|-------------|
+| `/api/auth/login` | GET | Initiates GitHub OAuth flow |
+| `/api/auth/callback` | GET | Handles OAuth callback, creates session |
+| `/api/auth/logout` | GET | Clears session and redirects home |
+| `/api/auth/me` | GET | Returns current authenticated user |
+| `/api/webhook/github` | POST | Receives GitHub push/installation events |
+| `/api/stripe/checkout` | POST | Creates a Stripe checkout session |
+| `/api/stripe/webhook` | POST | Handles Stripe billing events |
+| `/api/user/subscription` | GET | Returns current user's subscription status |
+| `/api/user/activity` | GET | Returns recent documentation activity |
+| `/api/health` | GET | Service health check (env vars + API connectivity) |
+| `/api/stats` | GET | Returns aggregate user/repo counts |
 
 ## Development
 
@@ -98,6 +122,31 @@ npm run dev
 ```
 
 Requires environment variables — see `.env.example` for the full list.
+
+### Required Environment Variables
+
+| Variable | Description |
+|----------|-------------|
+| `GITHUB_APP_ID` | GitHub App ID |
+| `GITHUB_APP_PRIVATE_KEY` | GitHub App private key (PEM) |
+| `GITHUB_WEBHOOK_SECRET` | Webhook signature secret |
+| `GITHUB_OAUTH_CLIENT_ID` | OAuth App client ID |
+| `GITHUB_OAUTH_CLIENT_SECRET` | OAuth App client secret |
+| `ANTHROPIC_API_KEY` | Claude API key |
+| `STRIPE_SECRET_KEY` | Stripe secret key |
+| `STRIPE_STARTER_PRICE_ID` | Stripe price ID for Starter plan |
+| `STRIPE_PRO_PRICE_ID` | Stripe price ID for Pro plan |
+| `STRIPE_WEBHOOK_SECRET` | Stripe webhook signing secret |
+| `SESSION_SECRET` | Secret for signing session tokens |
+| `KV_REST_API_URL` | Vercel KV REST URL |
+| `KV_REST_API_TOKEN` | Vercel KV REST token |
+| `NEXT_PUBLIC_APP_URL` | Public base URL (e.g. `https://docupilot-alpha.vercel.app`) |
+
+## Legal
+
+- [Privacy Policy](https://docupilot-alpha.vercel.app/privacy)
+- [Terms of Service](https://docupilot-alpha.vercel.app/terms)
+- [特定商取引法に基づく表記](https://docupilot-alpha.vercel.app/tokusho)
 
 ## License
 
