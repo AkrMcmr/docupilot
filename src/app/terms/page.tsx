@@ -157,7 +157,19 @@ export default function TermsPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-3">13. Contact</h2>
+            <h2 className="text-xl font-semibold mb-3">13. Export Restrictions</h2>
+            <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              The Service may be subject to export control laws and regulations. You agree not to
+              export, re-export, or transfer the Service or any related technical data to any
+              country, entity, or individual in violation of applicable export laws, including
+              without limitation the laws of Japan and the United States. By using the Service,
+              you represent that you are not located in, under the control of, or a national or
+              resident of any country subject to applicable trade sanctions.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-semibold mb-3">14. Contact</h2>
             <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">
               For questions about these Terms, please contact us at:{" "}
               <a href="mailto:machimura.akira@gmail.com"

@@ -251,7 +251,12 @@ export default function Home() {
       {/* Footer */}
       <footer className="border-t border-zinc-200 dark:border-zinc-800 px-6 py-8 text-sm text-zinc-500">
         <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <span>&copy; 2026 DocuPilot. Built for developers who ship.</span>
+          <div className="flex flex-col gap-1">
+            <span>&copy; 2026 DocuPilot. Built for developers who ship.</span>
+            <a href="mailto:machimura.akira@gmail.com" className="hover:text-zinc-900 dark:hover:text-white transition-colors">
+              machimura.akira@gmail.com
+            </a>
+          </div>
           <div className="flex flex-wrap items-center gap-6">
             <a
               href="https://github.com/AkrMcmr/docupilot"
