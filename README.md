@@ -27,13 +27,43 @@ DocuPilot reads your codebase, understands the changes, and generates accurate d
 
 ## GitHub Action
 
-Prefer CI/CD? Use the [DocuPilot Action](https://github.com/AkrMcmr/docupilot-action) — same AI doc generation, runs in your workflow:
+Prefer CI/CD over a GitHub App? Use the [DocuPilot Action](https://github.com/AkrMcmr/docupilot-action) — the same AI-powered doc generation, running directly in your own workflow.
 
 ```yaml
-- uses: AkrMcmr/docupilot-action@v1
-  with:
-    anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+name: DocuPilot - Auto Documentation
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: AkrMcmr/docupilot-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          generate_readme: 'true'
+          generate_changelog: 'true'
 ```
+
+Key differences from the GitHub App:
+
+| | GitHub App | GitHub Action |
+|---|---|---|
+| **Setup** | Install once, works everywhere | Add workflow file per repo |
+| **Trigger** | Automatic on push | `push` to `main` + manual `workflow_dispatch` |
+| **API key** | Managed by DocuPilot | Your own `ANTHROPIC_API_KEY` secret |
+| **Billing** | DocuPilot subscription | Your Anthropic API usage |
+
+The `workflow_dispatch` trigger lets you manually kick off documentation generation from the GitHub Actions UI at any time — useful for an initial run or after config changes.
 
 ## Configuration
 
@@ -73,6 +103,11 @@ If no config file is present, DocuPilot uses sensible defaults (README + CHANGEL
 | **Pro** | $29/mo | Unlimited | All docs + API docs + custom templates |
 
 Competitors like Mintlify charge $300+/mo. DocuPilot starts free.
+
+## Comparisons
+
+- [DocuPilot vs Mintlify](https://docupilot-alpha.vercel.app/compare/mintlify)
+- [DocuPilot vs ReadMe](https://docupilot-alpha.vercel.app/compare/readme)
 
 ## Tech Stack
 
