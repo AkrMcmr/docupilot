@@ -305,6 +305,12 @@ export default function Home() {
             >
               Terms
             </a>
+            <a
+              href="/tokusho"
+              className="hover:text-zinc-900 dark:hover:text-white transition-colors"
+            >
+              特定商取引法
+            </a>
           </div>
         </div>
       </footer>
